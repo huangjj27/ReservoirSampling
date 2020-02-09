@@ -22,13 +22,13 @@ trait StreamSampler<Item> {
     fn samples(&self) -> &[Item];
 }
 
-struct ReserviorSampler<Item> {
+struct ReservoirSampler<Item> {
     n: usize,
     K: usize,
     samples: Vec<Item>,
 }
 
-impl<Item> ReserviorSampler<Item> {
+impl<Item> ReservoirSampler<Item> {
     // 采样之前就应该知道要抽K个样本。
     fn with_cap(K: usize) -> Self {
         Self {
@@ -39,7 +39,7 @@ impl<Item> ReserviorSampler<Item> {
     }
 }
 
-impl<Item> StreamSampler<Item> for ReserviorSampler<Item> {
+impl<Item> StreamSampler<Item> for ReservoirSampler<Item> {
     fn process(&mut self, it: Item) {
         self.n += 1;
 
@@ -63,7 +63,7 @@ impl<Item> StreamSampler<Item> for ReserviorSampler<Item> {
 
 fn main() {
     let v = vec![8, 1, 1, 9, 2];
-    let mut sampler = ReserviorSampler::<usize>::with_cap(3);
+    let mut sampler = ReservoirSampler::<usize>::with_cap(3);
 
     for it in v {
         sampler.process(it);
