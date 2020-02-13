@@ -1,0 +1,16 @@
+image: "rust:latest"
+cache:
+  paths:
+    - book/
+
+before_script:
+    - cargo install mdbook
+
+pages:
+    script:
+        - mdbook build
+    artifacts:
+        paths:
+            - book
+    only:
+        - master
