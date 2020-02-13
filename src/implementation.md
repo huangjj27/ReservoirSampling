@@ -14,12 +14,15 @@ Rust 中的[特质（trait）](https://kaisery.gitbooks.io/trpl-zh-cn/ch10-02-tr
 # extern crate rand;
 use rand::random;
 
-trait StreamSampler<Item> {
+trait StreamSampler {
+    // 每种抽样器只会在一种总体中抽样，而总体中所有个体都属于相同类型
+    type Item;
+
     // 流式采样器无法知道总体数据有多少个样本，因此只逐个处理
-    fn process(&mut self, it: Item);
+    fn process(&mut self, it: Self::Item);
 
     // 任意时候应当知道当前抽取的样本有哪些
-    fn samples(&self) -> &[Item];
+    fn samples(&self) -> &[Self::Item];
 }
 
 struct ReservoirSampler<Item> {
@@ -39,8 +42,10 @@ impl<Item> ReservoirSampler<Item> {
     }
 }
 
-impl<Item> StreamSampler<Item> for ReservoirSampler<Item> {
-    fn process(&mut self, it: Item) {
+impl<Item> StreamSampler for ReservoirSampler<Item> {
+    type Item = Item;
+
+    fn process(&mut self, it: Self::Item) {
         self.n += 1;
 
         // 初始化
@@ -56,7 +61,7 @@ impl<Item> StreamSampler<Item> for ReservoirSampler<Item> {
         }
     }
 
-    fn samples(&self) -> &[Item] {
+    fn samples(&self) -> &[Self::Item] {
         &self.samples
     }
 }
