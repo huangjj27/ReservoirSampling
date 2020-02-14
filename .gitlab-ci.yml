@@ -9,8 +9,9 @@ before_script:
 pages:
     script:
         - mdbook build
+        - mv book public
     artifacts:
         paths:
-            - book/
+            - public/
     only:
         - master
