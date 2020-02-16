@@ -49,6 +49,7 @@ struct Lottery<Item> {
     lucky: Vec<Item>,
 }
 
+#[derive(Clone)]
 struct Price {
     name: String,
     cap: usize,
@@ -136,15 +137,15 @@ impl LotteryBuilder {
         }
     }
 
-    fn add_price(mut self, name: &str, cap: usize) -> Self {
+    fn add_price(&mut self, name: &str, cap: usize) -> &mut Self {
         self.prices.push(Price { name: name.into(), cap });
         self
     }
 
-    fn build<Item>(self) -> Lottery<Item> {
+    fn build<Item>(&self) -> Lottery<Item> {
         Lottery {
             total: 0,
-            prices: self.prices,
+            prices: self.prices.clone(),
             lucky: Vec::new(),
         }
     }
